@@ -77,14 +77,14 @@ echo "Welcome " . $userID;
       </select>
 
       <label for="pType">Personnel Type:</label>
-      <select name="pType" id="pType">
+      <select name="pType" id="pType" required>
       </select>
 
       <label for="NoOfPersonnel">No. Of Personnel:</label>
-      <input type="number" id="NoOfPersonnel" name="NoOfPersonnel" required>
+      <input type="number" id="NoOfPersonnel" name="NoOfPersonnel">
 
       <label for="manHrs">Man Hours:</label>
-      <input type="number" id="manHrs" name="manHrs" required>
+      <input type="number" id="manHrs" name="manHrs">
 
       <!-- <label for="entity_type">Associated Entity:</label>
             <input type="text" id="entity_type" name="entity_type" false> -->
@@ -93,83 +93,89 @@ echo "Welcome " . $userID;
   </div>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script type="text/javascript">
-  $(document).ready(function() {
-    $("#entity").change(function() {
-      let selectedEntity = $("#entity option:selected").data("category");
-      let entityID = $("#entity").val();
+    $(document).ready(function() {
+      $("#entity").change(function() {
+        let selectedEntity = $("#entity option:selected").data("category");
+        let entityID = $("#entity").val();
 
-      $.ajax({
-        url: 'includes/getData.php',
-        method: 'post',
-        data: 'selectedEntity=' + selectedEntity + '&hEntity=' + (selectedEntity === 1 ? 'selected' :
-          'all')
-      }).done(function(entities) {
-        entities = JSON.parse(entities);
-        $("#hEntity").empty();
-        if (selectedEntity === 1) {
-          $("#hEntity").append('<option value="' + entities[0].ID + '">' + entities[0].EntityName +
-            '</option>');
-        } else {
-          entities.forEach(function(entity) {
-            $("#hEntity").append('<option value=' + entity.ID + '>' + entity.EntityName + '</option>');
-          });
-        }
+        $.ajax({
+          url: 'includes/getData.php',
+          method: 'post',
+          data: 'selectedEntity=' + selectedEntity + '&hEntity=' + (selectedEntity === 1 ? 'selected' :
+            'all')
+        }).done(function(entities) {
+          entities = JSON.parse(entities);
+          $("#hEntity").empty();
+          if (selectedEntity === 1) {
+            $("#hEntity").append('<option value="' + entities[0].ID + '">' + entities[0].EntityName +
+              '</option>');
+          } else {
+            entities.forEach(function(entity) {
+              $("#hEntity").append('<option value=' + entity.ID + '>' + entity.EntityName + '</option>');
+            });
+          }
+        });
+
       });
+      $("#entity").change(function() {
+        // var selectedEntity = $("#entity").val();
+        let selectedEntity = $("#entity option:selected").data("category");
+        // console.log(selectedEntity);
+        $.ajax({
+          url: 'includes/getData.php',
+          method: 'post',
+          data: 'selectedEntity=' + selectedEntity
+        }).done(function(entities) {
+          // console.log("entities", entities);
+          entities = JSON.parse(entities);
+          $("#entity_type").empty();
+          entities.forEach(function(entity) {
+            $("#entity_type").append('<option value=' + entity.ID + '>' + entity.EntityDescription +
+              '</option>');
+          })
+          $("#entity_type").trigger("change")
+        })
+      });
+      $("#entity_type").change(function() {
+        let entityType = $("#entity_type").val();
+        // console.log("entityType", entityType);
+        $.ajax({
+          url: 'includes/getData.php',
+          method: 'post',
+          data: 'entityType=' + entityType
+        }).done(function(pType) {
+          pType = JSON.parse(pType);
+          $("#pType").empty();
+          $("#pType").append('<option selected="" disabled="" value="">Select Personnel Type</option>');
+          pType.forEach(function(asso) {
+            // console.log("pType", pType);
+            $("#pType").append('<option value=' + asso.ID + '>' + asso.TypeDesc +
+              '</option>');
+          })
+        })
+      })
 
     });
-    $("#entity").change(function() {
-      // var selectedEntity = $("#entity").val();
-      let selectedEntity = $("#entity option:selected").data("category");
-      // console.log(selectedEntity);
-      $.ajax({
-        url: 'includes/getData.php',
-        method: 'post',
-        data: 'selectedEntity=' + selectedEntity
-      }).done(function(entities) {
-        // console.log("entities", entities);
-        entities = JSON.parse(entities);
-        $("#entity_type").empty();
-        entities.forEach(function(entity) {
-          $("#entity_type").append('<option value=' + entity.ID + '>' + entity.EntityDescription +
-            '</option>');
-        })
-        $("#entity_type").trigger("change")
-      })
-    });
-    $("#entity_type").change(function() {
-      let entityType = $("#entity_type").val();
-      // console.log("entityType", entityType);
-      $.ajax({
-        url: 'includes/getData.php',
-        method: 'post',
-        data: 'entityType=' + entityType
-      }).done(function(pType) {
-        $("#pType").empty();
-        $("#pType").append('<option selected="" disabled="" value="">Select Personnel Type</option>');
-        pType.forEach(function(asso) {
-          console.log("pType", pType);
-          $("#pType").append('<option value=' + asso.ID + '>' + asso.TypeDesc +
-            '</option>');
-        })
-      })
-    })
 
-  });
+    function validateForm() {
+      var noOfPersonnel = $("#NoOfPersonnel").val();
+      var manHrs = $("#manHrs").val();
+      var pType = $("#pType").val();
 
-  function validateForm() {
-    var noOfPersonnel = $("#NoOfPersonnel").val();
-    var manHrs = $("#manHrs").val();
+      if (!pType && !manHrs && !noOfPersonnel) {
+        alert("Please fill in all the fields");
+        return false;
+      }
+      // Check if manHrs is larger than 8 times NoOfPersonnel
+      if (parseInt(manHrs) > 300 * parseInt(noOfPersonnel)) {
+        alert(`Not valid working hours for ${noOfPersonnel} personnel in a month.`);
+        return false; // Prevent form submission
+      }
 
-    // Check if manHrs is larger than 8 times NoOfPersonnel
-    if (parseInt(manHrs) > 300 * parseInt(noOfPersonnel)) {
-      alert(`Not valid working hours for ${noOfPersonnel} personnel in a month.`);
-      return false; // Prevent form submission
+      // Your other validation logic can go here
+
+      return true;
     }
-
-    // Your other validation logic can go here
-
-    return true;
-  }
   </script>
 </body>
 
