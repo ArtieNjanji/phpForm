@@ -136,7 +136,29 @@
 
 
 
+     $("#entity").change(function() {
+     let selectedEntity = $("#entity option:selected").data("category");
+     let entityID = $("#entity").val();
 
+     $.ajax({
+     url: 'includes/getData.php',
+     method: 'post',
+     data: 'selectedEntity=' + selectedEntity + '&hEntity=' + (selectedEntity === 1 ? 'selected' :
+     'all')
+     }).done(function(entities) {
+     entities = JSON.parse(entities);
+     $("#hEntity").empty();
+     if (selectedEntity === 1) {
+     $("#hEntity").append('<option value="' + entities[0].ID + '">' + entities[0].EntityName +
+       '</option>');
+     } else {
+     entities.forEach(function(entity) {
+     $("#hEntity").append('<option value=' + entity.ID + '>' + entity.EntityName + '</option>');
+     });
+     }
+     });
+
+     });
 
 
 

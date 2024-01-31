@@ -25,7 +25,7 @@ echo "Welcome " . $userID;
 
 <body>
   <div class="link">
-    <a href="mainPage.php">Home</a>
+    <a href="mainPage.php">Back Home</a>
   </div>
   <div class="container">
     <form action="includes/manHours.php" method="post" onsubmit="return validateForm()">
@@ -50,7 +50,6 @@ echo "Welcome " . $userID;
         // sqlsrv_free_stmt($stmt);
         ?>
       </select>
-
       <!-- <input list="entityList"> -->
       <datalist id="entityList">
         <?php
@@ -65,19 +64,35 @@ echo "Welcome " . $userID;
         ?>
       </datalist>
 
-
-      <label for="hEntity">Hosting Department:</label>
+      <!-- <label for="hEntity">Hosting Department:</label>
       <select name="hEntity" id="hEntity">
         <option selected="" disabled="">Select Hosting Entity</option>
-        <!-- Options will be dynamically populated based on the selected entity -->
-      </select>
+         Options will be dynamically populated based on the selected entity 
+      </select> -->
+      <div id="invisiq">
+        <label for="hEntity">Hosting Entity:</label>
+        <select name="hEntity" id="hEntity">
+          <option selected="" disabled="">Select Hosting Entity</option>
+          <?php
+          $hEntties = getEntities();
+          foreach ($hEntties as $hEntity) {
+            $hEID = $hEntity["ID"];
+            $hEName = $hEntity["EntityName"];
+            $hEDesc = $hEntity["EntityType"];
+            echo "<option data-category = " . $hEDesc . " value=" . $hEID . " id = " . $hEID . ">" . $hEName . "</option>";
+          }
+          // sqlsrv_free_stmt($stmt);
+          ?>
+
+        </select>
+      </div>
 
       <label for="entity_type">Entity Type: </label>
       <select name="entity_type" id="entity_type">
       </select>
 
       <label for="pType">Personnel Type:</label>
-      <select name="pType" id="pType" required>
+      <select name="pType" id="pType">
       </select>
 
       <label for="NoOfPersonnel">No. Of Personnel:</label>
@@ -96,26 +111,12 @@ echo "Welcome " . $userID;
     $(document).ready(function() {
       $("#entity").change(function() {
         let selectedEntity = $("#entity option:selected").data("category");
-        let entityID = $("#entity").val();
-
-        $.ajax({
-          url: 'includes/getData.php',
-          method: 'post',
-          data: 'selectedEntity=' + selectedEntity + '&hEntity=' + (selectedEntity === 1 ? 'selected' :
-            'all')
-        }).done(function(entities) {
-          entities = JSON.parse(entities);
-          $("#hEntity").empty();
-          if (selectedEntity === 1) {
-            $("#hEntity").append('<option value="' + entities[0].ID + '">' + entities[0].EntityName +
-              '</option>');
-          } else {
-            entities.forEach(function(entity) {
-              $("#hEntity").append('<option value=' + entity.ID + '>' + entity.EntityName + '</option>');
-            });
-          }
-        });
-
+        if (selectedEntity === 1) {
+          $("#invisiq").hide();
+          $("#hEntity").val($("#entity").val());
+        } else {
+          $("#invisiq").show();
+        }
       });
       $("#entity").change(function() {
         // var selectedEntity = $("#entity").val();
@@ -146,7 +147,7 @@ echo "Welcome " . $userID;
         }).done(function(pType) {
           pType = JSON.parse(pType);
           $("#pType").empty();
-          $("#pType").append('<option selected="" disabled="" value="">Select Personnel Type</option>');
+          $("#pType").append('<option selected="" disabled="" >Select Personnel Type</option>');
           pType.forEach(function(asso) {
             // console.log("pType", pType);
             $("#pType").append('<option value=' + asso.ID + '>' + asso.TypeDesc +
@@ -161,11 +162,24 @@ echo "Welcome " . $userID;
       var noOfPersonnel = $("#NoOfPersonnel").val();
       var manHrs = $("#manHrs").val();
       var pType = $("#pType").val();
+      let selectedEntityCategory = $("#entity option:selected").data("category");
+      let selectedHostingEntity = $("#hEntity option:selected").text();
+      let selectedEntity = $("#entity option:selected").text();
 
-      if (!pType && !manHrs && !noOfPersonnel) {
+      console.log("selectedEntityCategory", selectedEntityCategory);
+      console.log("selectedHostingEntity", selectedHostingEntity);
+      console.log("selectedEntity", selectedEntity);
+
+
+      if (!pType || !manHrs || !noOfPersonnel) {
         alert("Please fill in all the fields");
         return false;
       }
+      if (selectedEntityCategory === 1 && selectedHostingEntity !== selectedEntity) {
+        alert("Please select the same entity for hosting and associated entity");
+        return false;
+      }
+
       // Check if manHrs is larger than 8 times NoOfPersonnel
       if (parseInt(manHrs) > 300 * parseInt(noOfPersonnel)) {
         alert(`Not valid working hours for ${noOfPersonnel} personnel in a month.`);
