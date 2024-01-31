@@ -36,9 +36,8 @@ echo "Welcome " . $userID;
       </select>
 
       <label for="entity">Entity:</label>
-
-      <input list="entityList" id="entity" name="entity">
-      <datalist id="entityList">
+      <select id="entity" name="entity" id="entity">
+        <option selected="" disabled="">Select Entity</option>
         <?php
         include 'includes/getData.php';
         $entties = getEntities();
@@ -46,7 +45,20 @@ echo "Welcome " . $userID;
           $eID = $entity["ID"];
           $eName = $entity["EntityName"];
           $eDesc = $entity["EntityType"];
-          echo "<option data-category = " . $eDesc . " value=" . htmlspecialchars_decode($eID) . " id = " . $eID . ">" . $eName . "</option>";
+          echo "<option data-category = " . $eDesc . " value=" . $eID . " id = " . $eID . ">" . $eName . "</option>";
+        }
+        // sqlsrv_free_stmt($stmt);
+        ?>
+      </select>
+      <!-- <input list="entityList"> -->
+      <datalist id="entityList">
+        <?php
+        $entties = getEntities();
+        foreach ($entties as $entity) {
+          $eID = $entity["ID"];
+          $eName = $entity["EntityName"];
+          $eDesc = $entity["EntityType"];
+          echo "<option data-category = " . $eDesc . " value=" . $eID . " id = " . $eID . ">" . $eName . "</option>";
         }
         // sqlsrv_free_stmt($stmt);
         ?>
@@ -58,7 +70,7 @@ echo "Welcome " . $userID;
          Options will be dynamically populated based on the selected entity 
       </select> -->
       <div id="invisiq">
-        <label for="hEntity">Hosting Department:</label>
+        <label for="hEntity">Hosting Entity:</label>
         <select name="hEntity" id="hEntity">
           <option selected="" disabled="">Select Hosting Entity</option>
           <?php
@@ -71,6 +83,7 @@ echo "Welcome " . $userID;
           }
           // sqlsrv_free_stmt($stmt);
           ?>
+
         </select>
       </div>
 
@@ -97,18 +110,17 @@ echo "Welcome " . $userID;
   <script type="text/javascript">
     $(document).ready(function() {
       $("#entity").change(function() {
-        let selectedEntity = parseInt($("#entityList option[value='" + $("#entity").val() + "']").attr(
-          "data-category"));
-        let selectedHostingEntity = parseInt($("#entityList option[value='" + $("#entity").val() + "']").attr(
-          "id"))
-
+        let selectedEntity = $("#entity option:selected").data("category");
         if (selectedEntity === 1) {
           $("#invisiq").hide();
-          $("#hEntity").val(selectedHostingEntity);
+          $("#hEntity").val($("#entity").val());
         } else {
           $("#invisiq").show();
         }
+      });
+      $("#entity").change(function() {
         // var selectedEntity = $("#entity").val();
+        let selectedEntity = $("#entity option:selected").data("category");
         // console.log(selectedEntity);
         $.ajax({
           url: 'includes/getData.php',

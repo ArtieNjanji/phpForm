@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['mainForm'])) {
 
   try {
     // 1, 'Whaleside',20,2,2,8,2500,'Artwell'
-    $tsql = "exec insert_man_hours ?, ?, ?, ?, ?, ?, ?";
-    $params = array($env, $entity, $hEntity, $pType, $NoOfPersonnel, $manHrs, $_SESSION['username']);
+    $tsql = "INSERT INTO ManHours (CreatedBy, FinYear, FinMonth, PersonnelTypeID,  Surface, NumOfPersonnel, HostingEntityID, EntityID, [Hours]) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $params = array($_SESSION['username'], $finY, $finM, $pType, $env, $NoOfPersonnel, $hEntity, $entity, $manHrs);
 
     $stmt = sqlsrv_query($conn, $tsql, $params);
 

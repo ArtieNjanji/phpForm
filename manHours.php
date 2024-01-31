@@ -36,8 +36,9 @@ echo "Welcome " . $userID;
       </select>
 
       <label for="entity">Entity:</label>
-      <select id="entity" name="entity" id="entity">
-        <option selected="" disabled="">Select Entity</option>
+
+      <input list="entityList" id="entity" name="entity">
+      <datalist id="entityList">
         <?php
         include 'includes/getData.php';
         $entties = getEntities();
@@ -45,32 +46,14 @@ echo "Welcome " . $userID;
           $eID = $entity["ID"];
           $eName = $entity["EntityName"];
           $eDesc = $entity["EntityType"];
-          echo "<option data-category = " . $eDesc . " value=" . $eID . " id = " . $eID . ">" . $eName . "</option>";
-        }
-        // sqlsrv_free_stmt($stmt);
-        ?>
-      </select>
-      <!-- <input list="entityList"> -->
-      <datalist id="entityList">
-        <?php
-        $entties = getEntities();
-        foreach ($entties as $entity) {
-          $eID = $entity["ID"];
-          $eName = $entity["EntityName"];
-          $eDesc = $entity["EntityType"];
-          echo "<option data-category = " . $eDesc . " value=" . $eID . " id = " . $eID . ">" . $eName . "</option>";
+          echo "<option data-category = " . $eDesc . " value=" . htmlspecialchars_decode($eID) . " id = " . $eID . ">" . $eName . "</option>";
         }
         // sqlsrv_free_stmt($stmt);
         ?>
       </datalist>
 
-      <!-- <label for="hEntity">Hosting Department:</label>
-      <select name="hEntity" id="hEntity">
-        <option selected="" disabled="">Select Hosting Entity</option>
-         Options will be dynamically populated based on the selected entity 
-      </select> -->
       <div id="invisiq">
-        <label for="hEntity">Hosting Entity:</label>
+        <label for="hEntity">Hosting Department:</label>
         <select name="hEntity" id="hEntity">
           <option selected="" disabled="">Select Hosting Entity</option>
           <?php
@@ -83,7 +66,6 @@ echo "Welcome " . $userID;
           }
           // sqlsrv_free_stmt($stmt);
           ?>
-
         </select>
       </div>
 
@@ -101,8 +83,6 @@ echo "Welcome " . $userID;
       <label for="manHrs">Man Hours:</label>
       <input type="number" id="manHrs" name="manHrs">
 
-      <!-- <label for="entity_type">Associated Entity:</label>
-            <input type="text" id="entity_type" name="entity_type" false> -->
       <button type="submit" onclick="" name="mainForm">Submit</button>
     </form>
   </div>
@@ -110,18 +90,22 @@ echo "Welcome " . $userID;
   <script type="text/javascript">
     $(document).ready(function() {
       $("#entity").change(function() {
-        let selectedEntity = $("#entity option:selected").data("category");
+        let selectedEntity = parseInt($("#entityList option[value='" + $("#entity").val() + "']").attr(
+          "data-category"));
+        let selectedHostingEntity = parseInt($("#entityList option[value='" + $("#entity").val() + "']").attr(
+          "id"))
+
         if (selectedEntity === 1) {
           $("#invisiq").hide();
-          $("#hEntity").val($("#entity").val());
+          $("#hEntity").val(selectedHostingEntity);
         } else {
           $("#invisiq").show();
+          selectedEntity = 2;
+          // if (!selectedHostingEntity) {
+          //   $("#entity").val(parseInt($("#entityList option:last-child").attr("id")) + 1);
+          // }
         }
-      });
-      $("#entity").change(function() {
-        // var selectedEntity = $("#entity").val();
-        let selectedEntity = $("#entity option:selected").data("category");
-        // console.log(selectedEntity);
+        console.log((parseInt($("#entityList option:last-child").attr("id")) + 1))
         $.ajax({
           url: 'includes/getData.php',
           method: 'post',
@@ -155,7 +139,6 @@ echo "Welcome " . $userID;
           })
         })
       })
-
     });
 
     function validateForm() {
@@ -185,8 +168,6 @@ echo "Welcome " . $userID;
         alert(`Not valid working hours for ${noOfPersonnel} personnel in a month.`);
         return false; // Prevent form submission
       }
-
-      // Your other validation logic can go here
 
       return true;
     }
