@@ -1,7 +1,8 @@
 <?php
 include 'connection.php';
 
-function getEntities(){
+function getEntities()
+{
   global $conn;
   $tsql = "SELECT * FROM Entities";
   $stmt = sqlsrv_query($conn, $tsql);
@@ -12,7 +13,7 @@ function getEntities(){
   return $entities;
 }
 
-if(isset($_POST['selectedEntity'])){
+if (isset($_POST['selectedEntity'])) {
   $entity = $_POST['selectedEntity'];
   $tsql = "SELECT * FROM [EntityTypes] WHERE ID = ?";
   $params = array($entity);
@@ -35,4 +36,3 @@ if (isset($_POST['entityType'])) {
   }
   echo json_encode($entities);
 }
-?>
