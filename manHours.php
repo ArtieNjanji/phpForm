@@ -25,7 +25,7 @@ echo "Welcome " . $userID;
 
 <body>
   <div class="link">
-    <a href="mainPage.php">Back Home</a>
+    <a href="index.php">Back Home</a>
   </div>
   <div class="container">
     <form action="includes/manHours.php" method="post" onsubmit="return validateForm()">
@@ -46,7 +46,7 @@ echo "Welcome " . $userID;
           $eID = $entity["ID"];
           $eName = $entity["EntityName"];
           $eDesc = $entity["EntityType"];
-          echo "<option data-category = " . $eDesc . " value=" . $eName . " id = " . $eID . ">" . $eName . "</option>";
+          echo "<option data-category = " . $eDesc . " value='" . $eName . "'" . " id = " . $eID . ">" . $eName . "</option>";
         }
         // sqlsrv_free_stmt($stmt);
         ?>
@@ -96,7 +96,7 @@ echo "Welcome " . $userID;
           "data-category"));
         let selectedHostingEntity = parseInt($("#entityList option[value='" + $("#entity").val() + "']").attr(
           "id"))
-
+        console.log("selectedEntityCategory", selectedEntity);
         if (selectedEntity === 1) {
           $("#invisiq").hide();
           $("#hEntity").val(selectedHostingEntity);

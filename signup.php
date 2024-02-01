@@ -6,19 +6,19 @@
   <title>My Web Page</title>
   <link rel="stylesheet" href="style.css">
   <style>
-  a {
-    text-decoration: none;
-    color: rgb(12, 45, 9);
-    margin-top: 20px;
+    a {
+      text-decoration: none;
+      color: rgb(12, 45, 9);
+      margin-top: 20px;
 
-  }
+    }
 
-  .img img {
-    width: 500px;
-    height: 100px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
+    .img img {
+      width: 500px;
+      height: 100px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 
@@ -58,45 +58,45 @@
     </form>
   </div>
   <script>
-  async function signup() {
-    event.preventDefault();
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    let cPassword = document.getElementById("cPassword").value;
-    let associated_entity = document.getElementById("associated_entity").value;
+    async function signup() {
+      event.preventDefault();
+      let username = document.getElementById("username").value;
+      let password = document.getElementById("password").value;
+      let cPassword = document.getElementById("cPassword").value;
+      let associated_entity = document.getElementById("associated_entity").value;
 
-    if (!username || !password || !cPassword || !associated_entity) {
-      alert("Please fill out all fields");
+      if (!username || !password || !cPassword || !associated_entity) {
+        alert("Please fill out all fields");
+        return false;
+      }
+
+      let response = await fetch('includes/register.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'username': username,
+          'password': password,
+          'cPassword': cPassword,
+          'associated_entity': associated_entity
+        }),
+
+      });
+      let rawRes = await response.text();
+      console.log(rawRes);
+
+      let data = JSON.parse(rawRes)
+      console.log(data);
+
+      // console.log(data);
+      if (data.success) {
+        window.location.href = "index.php";
+      } else {
+        alert(data.message);
+      }
       return false;
     }
-
-    let response = await fetch('includes/register.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'username': username,
-        'password': password,
-        'cPassword': cPassword,
-        'associated_entity': associated_entity
-      }),
-
-    });
-    let rawRes = await response.text();
-    console.log(rawRes);
-
-    let data = JSON.parse(rawRes)
-    console.log(data);
-
-    // console.log(data);
-    if (data.success) {
-      window.location.href = "mainPage.php";
-    } else {
-      alert(data.message);
-    }
-    return false;
-  }
   </script>
 
 
