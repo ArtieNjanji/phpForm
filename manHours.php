@@ -20,7 +20,6 @@ echo "Welcome " . $userID;
   <link rel="icon" href="../../favicon" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="index.css">
-
 </head>
 
 <body>

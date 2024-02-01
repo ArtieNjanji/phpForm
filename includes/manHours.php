@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === "POST" && isset($_POST['mainForm'])) {
   $entity = htmlspecialchars($_POST['entity']);
   $hEntity = htmlspecialchars($_POST['hEntity']);
   $pType = htmlspecialchars($_POST['pType']);
-  // echo $pType;
 
   try {
     // 1, 'Whaleside',20,2,2,8,2500,'Artwell'

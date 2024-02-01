@@ -24,8 +24,6 @@ echo "Welcome " . $userID;
 
 <body>
   <div>
-
-    <!-- Your content goes here -->
     <div class="link">
       <a href="manHours.php">Add Men hours</a>
     </div>

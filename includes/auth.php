@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['role'] = $result['data']['role'];
         $_SESSION['associatedEntity'] = $result['data']['associatedEntity'];
 
-        // Regenerate session ID for security
+
         session_regenerate_id();
 
         // Return a JSON response indicating success and redirect URL

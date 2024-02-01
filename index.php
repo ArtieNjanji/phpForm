@@ -72,9 +72,9 @@ echo "Welcome " . $userID;
                             Entities e ON mh.EntityID = e.ID
                         LEFT JOIN
                             Entities eHosting ON mh.HostingEntityID = eHosting.ID 
-                      where mh.[EntityID] = ? or mh.CreatedBy = ?
+                      where  mh.CreatedBy = ? or mh.[HostingEntityID] = ?
                       order by mh.[ID] desc";
-          $params = array($associatedEntity, $userID);
+          $params = array($userID, $associatedEntity);
           $stmt = sqlsrv_query($conn, $tsql, $params);
         } else {
           $tsql = "SELECT
