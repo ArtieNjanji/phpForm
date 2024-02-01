@@ -38,8 +38,8 @@ echo "Welcome " . $userID;
           <th>Num Of Personnel</th>
           <th>Work Place</th>
           <th>Hours</th>
-          <th>Hosting Entity</th>
           <th>Entity</th>
+          <th>Hosting Department</th>
           <th>Created By</th>
           <th>Status</th>
           <th>Approved By</th>

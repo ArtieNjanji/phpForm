@@ -46,7 +46,7 @@ echo "Welcome " . $userID;
           $eID = $entity["ID"];
           $eName = $entity["EntityName"];
           $eDesc = $entity["EntityType"];
-          echo "<option data-category = " . $eDesc . " value=" . htmlspecialchars_decode($eID) . " id = " . $eID . ">" . $eName . "</option>";
+          echo "<option data-category = " . $eDesc . " value=" . $eName . " id = " . $eID . ">" . $eName . "</option>";
         }
         // sqlsrv_free_stmt($stmt);
         ?>
@@ -83,6 +83,8 @@ echo "Welcome " . $userID;
       <label for="manHrs">Man Hours:</label>
       <input type="number" id="manHrs" name="manHrs">
 
+      <!-- <label for="entity_type">Associated Entity:</label>
+            <input type="text" id="entity_type" name="entity_type" false> -->
       <button type="submit" onclick="" name="mainForm">Submit</button>
     </form>
   </div>
@@ -105,7 +107,7 @@ echo "Welcome " . $userID;
           //   $("#entity").val(parseInt($("#entityList option:last-child").attr("id")) + 1);
           // }
         }
-        console.log((parseInt($("#entityList option:last-child").attr("id")) + 1))
+        // console.log((parseInt($("#entityList option:last-child").attr("id")) + 1))
         $.ajax({
           url: 'includes/getData.php',
           method: 'post',
@@ -153,7 +155,6 @@ echo "Welcome " . $userID;
       console.log("selectedHostingEntity", selectedHostingEntity);
       console.log("selectedEntity", selectedEntity);
 
-
       if (!pType || !manHrs || !noOfPersonnel) {
         alert("Please fill in all the fields");
         return false;
@@ -168,6 +169,8 @@ echo "Welcome " . $userID;
         alert(`Not valid working hours for ${noOfPersonnel} personnel in a month.`);
         return false; // Prevent form submission
       }
+
+      // Your other validation logic can go here
 
       return true;
     }

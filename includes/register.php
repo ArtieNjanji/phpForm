@@ -91,7 +91,6 @@ function signin($username, $password)
   }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $inputJSON = file_get_contents('php://input');
   $input = json_decode($inputJSON, TRUE);
@@ -100,7 +99,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $password = htmlspecialchars($input['password']);
   $associated_entity = htmlspecialchars($input['associated_entity']);
   $confirmPassword = htmlspecialchars($input['cPassword']);
-
 
   $result = signup($username, $password, $associated_entity, $confirmPassword);
 
